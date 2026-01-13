@@ -1,31 +1,36 @@
-class Player {
-    int wins;  
-    int winTotal;
+/**
+ * Representa a un jugador en el juego.
+ * Maneja su propio estado (victorias) y acciones (hacer un movimiento).
+ */
+public class Player {
+    private String name;
+    private int wins;
 
-    public String playerChoice() {
-        String choice = null;
-        int c = (int) (Math.random() * 3);
-
-        switch (c) {
-            case 0:
-                choice = "rock";
-                break;
-            case 1:
-                choice = "paper";
-                break;
-            case 2:
-                choice = "scissors";
-                break;
-        }
-        return choice;
+    public Player(String name) {
+        this.name = name;
+        this.wins = 0;
     }
 
-    public int setWins() {
-        winTotal = wins++;
-        return winTotal;
+    /**
+     * El jugador realiza un movimiento.
+     * @return Un movimiento aleatorio del Enum Move.
+     */
+    public Move makeMove() {
+        return Move.getRandomMove();
+    }
+
+    /**
+     * Incrementa el contador de victorias del jugador en 1.
+     */
+    public void incrementWins() {
+        this.wins++;
     }
 
     public int getWins() {
-        return wins;
+        return this.wins;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

@@ -1,65 +1,93 @@
+/**
+ * Clase principal que gestiona el flujo del juego Rock-Paper-Scissors.
+ */
 public class RPGGame {
-    public static void main(String args[]) {
 
-        Player p1 = new Player();
-        Player p2 = new Player();
+    // Constante para evitar "Números Mágicos"
+    private static final int WIN_THRESHOLD = 3;
 
-        boolean gameWon = false;
-        int roundsPlayed = 0;  
-        int p1Wins = p1.wins;
-        int p2Wins = p2.wins;
-        int draw = 0;
+    private Player p1;
+    private Player p2;
+    private int roundsPlayed;
+    private int drawCount;
 
-        String p1Choice;
-        String p2Choice;
+    public RPGGame() {
+        this.p1 = new Player("Player 1");
+        this.p2 = new Player("Player 2");
+        this.roundsPlayed = 0;
+        this.drawCount = 0;
+    }
 
+    /**
+     * Inicia el bucle principal del juego.
+     */
+    public void start() {
+        System.out.println("Starting Game: First to " + WIN_THRESHOLD + " wins!");
         
-        do {
-            System.out.println("***** Round: " + roundsPlayed + " *****\n");
-            System.out.println("Number of Draws: " + draw + "\n");
+        while (!isGameOver()) {
+            playRound();
+        }
+        
+        printFinalResults();
+    }
 
-            p1Choice = p1.playerChoice();
-            System.out.println("Player 1: " + p1Choice +
-                               "  Player 1 Total Wins: " + p1Wins);
+    /**
+     * Ejecuta la lógica de una sola ronda.
+     */
+    private void playRound() {
+        roundsPlayed++;
+        System.out.println("\n***** Round: " + roundsPlayed + " *****");
+        
+        // Cada jugador decide su movimiento
+        Move m1 = p1.makeMove();
+        Move m2 = p2.makeMove();
 
-            p2Choice = p2.playerChoice();
-            System.out.println("Player 2: " + p2Choice);
+        System.out.println(p1.getName() + ": " + m1);
+        System.out.println(p2.getName() + ": " + m2);
 
-            if ((p1Choice.equals("rock")) && (p2Choice.equals("paper"))) {
-                p2Wins = p2.setWins();
-                System.out.println("Player 2 Wins");
-            } else if ((p1Choice.equals("paper")) && (p2Choice.equals("rock"))) {
-                p1Wins = p1.setWins();
-                System.out.println("Player 1 Wins");
-            } else if ((p1Choice.equals("rock")) && (p2Choice.equals("scissors"))) {
-                p1Wins = p1.setWins();
-                System.out.println("Player 1 Wins");
-            } else if ((p1Choice.equals("scissors")) && (p2Choice.equals("rock"))) {
-                p2Wins = p2.setWins();
-                System.out.println("Player 2 Wins");
-            } else if ((p1Choice.equals("scissors")) && (p2Choice.equals("paper"))) {
-                p1Wins = p1.setWins();
-                System.out.println("Player 1 Wins");
-            } else if ((p1Choice.equals("paper")) && (p2Choice.equals("scissors"))) {
-                p2Wins = p2.setWins();
-                System.out.println("Player 2 Wins");
-            }
+        determineRoundWinner(m1, m2);
+        printScore();
+    }
 
-            if (p1Choice.equals(p2Choice)) {
-                draw++;
-                System.out.println("\n\t\t Draw \n");
-            }
+    /**
+     * Determina el ganador de la ronda actual comparando los movimientos.
+     */
+    private void determineRoundWinner(Move m1, Move m2) {
+        if (m1 == m2) {
+            System.out.println("\tIt's a Draw!");
+            drawCount++;
+        } else if (m1.beats(m2)) {
+            System.out.println("\t" + p1.getName() + " Wins this round!");
+            p1.incrementWins();
+        } else {
+            System.out.println("\t" + p2.getName() + " Wins this round!");
+            p2.incrementWins();
+        }
+    }
 
-            roundsPlayed++;
+    private void printScore() {
+        System.out.println("Current Score -> " + p1.getName() + ": " + p1.getWins() + 
+                           " | " + p2.getName() + ": " + p2.getWins());
+    }
 
-            if ((p1.getWins() >= 3) || (p2.getWins() >= 3)) {
-                gameWon = true;
-                System.out.println("GAME WON");
-            }
+    private boolean isGameOver() {
+        return p1.getWins() >= WIN_THRESHOLD || p2.getWins() >= WIN_THRESHOLD;
+    }
 
-            System.out.println();
+    private void printFinalResults() {
+        System.out.println("\n=========================");
+        System.out.println("Total Rounds: " + roundsPlayed);
+        System.out.println("Total Draws: " + drawCount);
+        
+        if (p1.getWins() > p2.getWins()) {
+            System.out.println("GAME WON by " + p1.getName() + "!");
+        } else {
+            System.out.println("GAME WON by " + p2.getName() + "!");
+        }
+        System.out.println("=========================");
+    }
 
-        } while (gameWon != true);
+    public static void main(String[] args) {
+        new RPGGame().start();
     }
 }
-
