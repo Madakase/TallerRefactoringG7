@@ -10,7 +10,6 @@ public class Rules {
         beats[Move.SCISSORS.ordinal()] = Move.PAPER;    
     }
 
-
     public boolean doesFirstBeatSecond(Move m1, Move m2) {
         return beats[m1.ordinal()] == m2;
     }
